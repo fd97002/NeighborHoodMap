@@ -1,0 +1,51 @@
+html, body { 
+	height: 100%; 
+	margin: 0; 
+	padding: 0;
+}
+
+#map {
+	height: 100%;
+}
+
+.container {
+	background-color: rgba(0,0,22, .4);
+	border: 1px solid gray;
+	height: 100px;
+	width: 33.33%;
+	position: absolute;
+	z-index: 5;
+} 
+
+.listcontainer {
+	position: absolute;
+	top: 25px;
+	right: 10px;
+	background-color: rgba(0,0,22, .6);
+	color:#f9f043;
+	border: 1px solid gray;
+	width: 30%;
+	z-index: 5;
+}
+
+
+#filterschool {
+  position: absolute;
+  left: 40px;
+  width: 50%;
+  font-size: 18px;
+  padding: 20px;
+  padding-left: 5px;
+  z-index: 5;
+  color: #f9f043;
+  font-weight: bold;
+}
+
+#inputschool {
+  position: absolute;
+  width: 240px;
+  height: 40px;
+  left: 45px;
+  top: 48px;
+  z-index: 5;
+}

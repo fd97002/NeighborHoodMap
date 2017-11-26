@@ -1,0 +1,37 @@
+<!-- Neighborhood map assignment udacity -->
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <script src="js/jquery.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/knockout-3.4.2.js"></script>
+  <script src="js/mapjs.js"></script>
+
+  <title>School Map</title>
+</head>
+<body>
+<div class="container">
+    <div id="filterschool">
+      Schools near Expressway, Noida:
+    </div>
+
+    <div id="inputschool">
+      <input id="autocomplete" placeholder="Input School Name" type="text"/>
+    </div>
+</div>
+
+<div class="listcontainer">
+  <h4>Schools Nearby</h4>
+  <ul id="schoollist" data-bind="foreach: schoolList">
+    <li data-bind="text: name"> </li>
+  </ul>
+</div>
+
+  <div id="map"></div>
+  <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDK-u7orw2dFAM-2VVKCPUtEUioCLWRHIE&v=3&callback=initSchoolsApp" async defer></script>
+</body>
+</html>
