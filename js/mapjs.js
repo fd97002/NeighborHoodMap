@@ -1,3 +1,16 @@
+// ****************************************************** CHECK LIST ************************************************************************************
+// 1. Write code required to add a full-screen map to your page using the Google Maps API. For sake of efficiency, the map API should be called 		*
+//    only once.																																		*
+// 2. If you are prompted to do so, you may want to get a Google Maps API key, and include it as the value of the key parameter when loading the 		*
+//    Google Maps API in index.html: <script src="http://maps.googleapis.com/maps/api/js?libraries=places&key=[YOUR_API_KEY]"></script> 				*
+// 3. Write code required to display map markers identifying at least 5 locations that you are interested in within this neighborhood. Your app should	* 
+//    display those locations by default when the page is loaded.																						*
+// 4. Implement a list view of the set of locations defined in step 5.																					*
+// 5. Provide a filter option that uses an input field to filter both the list view and the map markers displayed by default on load. The list view 	*
+//    and the markers should update accordingly in real time. Providing a search function through a third-party API is not enough to meet specifications* 
+//    This filter can be a text input or a dropdown menu.																								*
+// ******************************************************************************************************************************************************
+
 var map;
 
 //List of Schools near Expressway Noida
@@ -42,16 +55,37 @@ var School = function(value) {
 	this.lat = value.lat;
 	this.long = value.long;
 
+	//making visible flag an observable so that we can hide/show markers as it changes
+	this.visible = ko.observable(true);
+
+	//draw custom markers for each school
 	var myLatLng = {lat: this.lat, lng: this.long};
 	this.marker = new google.maps.Marker({
           position: myLatLng,
           map: map,
           title: this.name
-        });	
+        });
+
+	//this function would be called whenever visible (observable) changes
+    this.showMarker = ko.computed( function(){
+    	if(!this.visible()){
+    		this.marker.setMap(null);
+    	}
+    	else{
+    		this.marker.setMap(map);
+    	}
+    	return true;	
+    }, this);
+    	
 }
 
 function SchoolViewModel() {
 	var self = this;
+
+	//filter string
+	self.filterInput = ko.observable('');
+
+	//list of schools
 	self.schoolList = ko.observableArray([]);
 
 	//load map with default location
@@ -61,6 +95,27 @@ function SchoolViewModel() {
 	schoolsModel.forEach( function(s) {
 		self.schoolList.push(new School(s));
 	});
+
+
+	//create an updated list based on what user typed
+	//trickery to invoke updateList function via dummy worker
+	self.updateList = function () {
+        var filterStr = self.filterInput().toLowerCase();
+        self.schoolList().forEach(function(s){
+        	if(filterStr === s.name.toLowerCase()){
+        		s.visible(true);
+        	}
+        	else{
+        		s.visible(false);
+        	}
+        });
+        return true;
+    }
+
+	self.worker = ko.computed( function(){
+		if(self.filterInput()) self.updateList();
+	}, this); 
+
 
 }	
 
