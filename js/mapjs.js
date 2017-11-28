@@ -87,23 +87,29 @@ function SchoolViewModel() {
 
 	//list of schools
 	self.schoolList = ko.observableArray([]);
+	self.filteredSchoolList = ko.observableArray([]);
 
 	//load map with default location
 	InitMap();
 
 	//Push all school names in an observable array
 	schoolsModel.forEach( function(s) {
-		self.schoolList.push(new School(s));
+		var school = new School(s);
+		self.schoolList.push(school);
+		self.filteredSchoolList.push(school);
 	});
 
 
 	//create an updated list based on what user typed
-	//trickery to invoke updateList function via dummy worker
+	//filter checks if the string being typed matches any of the school names (in part starting index 0 to give an incremental serach effect)
 	self.updateList = function () {
         var filterStr = self.filterInput().toLowerCase();
+        self.filteredSchoolList.removeAll();
+
         self.schoolList().forEach(function(s){
-        	if(filterStr === s.name.toLowerCase()){
+        	if(!filterStr || (s.name.toLowerCase().indexOf(filterStr)===0)){
         		s.visible(true);
+        		self.filteredSchoolList.push(s);
         	}
         	else{
         		s.visible(false);
@@ -112,8 +118,10 @@ function SchoolViewModel() {
         return true;
     }
 
+	//trickery to invoke updateList function via dummy worker
+	//Now realise that filteredSchoolList can be an observable as well & that should prevent this trickery 
 	self.worker = ko.computed( function(){
-		if(self.filterInput()) self.updateList();
+		self.updateList();
 	}, this); 
 
 

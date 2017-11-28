@@ -1,5 +1,7 @@
 
 <!-- Neighborhood map assignment udacity -->
+<!-- Keep in time. Spent a lot of time fixing this. http://knockoutjs.com/documentation/textinput-binding.html -->
+
 <!DOCTYPE html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
@@ -21,13 +23,13 @@
     </div>
 
     <div id="inputschool">
-      <input id="filterschoolinput" placeholder="Input School Name" type="text" data-bind="value: filterInput, valueUpdate: 'afterkeydown' "/>
+      <input id="filterschoolinput" placeholder="Input School Name" type="text" data-bind="textInput: filterInput, valueUpdate: 'afterkeydown' "/>
     </div>
 </div>
 
 <div class="listcontainer">
   <h4>Schools Nearby</h4>
-  <ul id="schoollist" data-bind="foreach: schoolList">
+  <ul id="schoollist" data-bind="foreach: filteredSchoolList">
     <li data-bind="text: name"> </li>
   </ul>
 </div>
