@@ -49,3 +49,61 @@ html, body {
   top: 48px;
   z-index: 5;
 }
+
+.venueBlock .venueDetails .venueData .venueDataItem:last-child .delim {
+    display: none;
+}
+
+.venueBlock .venueDetails .venueData .delim {
+    color: #ccc;
+    padding: 0 2px;
+}
+
+.venueData {
+    color: #959b9e;
+    font-size: 10px;
+    font-weight: bold;
+    margin-top: -1px;
+}
+
+.venueBlock .venueDetails .venueAddress {
+    color: #959b9e;
+    font-size: 11px;
+}
+
+.venueAddressData {
+    width: 170px;
+}
+.venueScore {
+    float: left;
+    margin-right: 5px;
+    position: relative;
+    top: 3px;
+}
+
+.neutral {
+    background: #ffc800;
+}
+
+.venueName {
+  font-weight: bold;
+}
+
+.venueBlock {
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+
+.venue.details {
+    width: 208px;
+}
+
+.venuicon {
+    float: left;
+    height: 32px;
+    line-height: 0;
+    position: relative;
+    width: 42px;
+}
+

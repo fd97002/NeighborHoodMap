@@ -23,48 +23,38 @@ var fs_secret;
 //List of Schools near Expressway Noida
 var schoolsModel = [
 	{
-		name: 'Lotus Valley International School',
-		lat: 28.5382382,
-		long: 77.34513330000004
+		name: 'DLF Mall of India',
+		lat: 28.5675625,
+		long: 77.32123019999995
 	}
-	//,
-	//{
-	//	name: 'Step by Step School',
-	//	lat: 28.511652,
-	//	long: 77.378141
-	//},
-	//{
-	//	name: 'Pathways School',
-	//	lat: 28.54226,
-	//	long: 77.367722
-	//},
-	//{
-	//	name: 'The Shriram Millennium School',
-	//	lat: 28.499339,
-	//	long: 77.397373
-	//},
-	//{
-	//	name: 'Gyanshree School',
-	//	lat: 28.536222,
-	//	long: 77.349374
-	//}
+	,
+	{
+		name: 'The Great India Place',
+		lat: 28.567806,
+		long: 77.32581600000003
+	},
+	{
+		name: 'Decathlon Noida',
+		lat: 28.5637028,
+		long: 77.32347649999997
+	},
+	{
+		name: 'Logix City Center',
+		lat: 28.5742969,
+		long: 77.35411669999996
+	},
+	{
+		name: 'Centerstage Mall',
+		lat: 28.5678233,
+		long: 77.32288859999994
+	}
 ];
 
 function InitMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
-    	center: {lat: 28.5382382, lng: 77.34513330000004},
+    	center: {lat: 28.5675625, lng: 77.32123019999995},
     	zoom: 16
 	});
-
-	//info window logic
-	var infowindow =  new google.maps.InfoWindow({
-		content: ''
-	});
-
-	google.maps.event.addListener(map, 'click', function(event) {
-		infowindow.setPosition(event.latLng);
-		infowindow.open(map);
-	});         	
 
 }
 
@@ -75,11 +65,19 @@ var School = function(value) {
 	self.long = value.long;
 	self.latLng = {lat: self.lat, lng: self.long};
 
+	//info window logic
+	self.infoWindow =  new google.maps.InfoWindow({
+				content: ''
+	});
+
 	//FourSquare APIs to fetch information on the marker location
 	self.photoUrl ='';
 	self.sector ='';
 	self.city='';
 	self.category='';
+	self.rating='';
+	self.url='';
+	self.catIcon='';
 
 	fs_apikey = "VFDBW4OD4LSAHNAE5ZT15QBLUKLGNPRPPLZNEVV5RXG30RCZ";
 	fs_secret = "L2TC2OZDPAW4UGIWNX2VUNYN2LRTKCYHNEAHBPKHTTOMF2PW";
@@ -96,21 +94,61 @@ var School = function(value) {
 	
 		$.getJSON(fsVenueDetailsUrl).done(function (strawberry) {
 			var venue = strawberry.response.venue;
-			self.photoUrl = venue.bestPhoto.prefix+"width100"+venue.bestPhoto.suffix;
-			self.sector = venue.location.formattedAddress[0];
-			self.city = venue.location.formattedAddress[1];
-			self.category = venue.categories[0].name;				
-	
+			
+			if(venue.bestPhoto){
+				self.photoUrl = venue.bestPhoto.prefix+"width100"+venue.bestPhoto.suffix;
+			}
+			else{
+				venue.photo='';
+			}
+			if(venue.location.formattedAddress[0])
+				self.sector = venue.location.formattedAddress[0];
+			else
+				venue.sector='';
+			if(venue.location.formattedAddress[1]){
+				self.city = venue.location.formattedAddress[1];
+			}
+			else{
+				self.city = '';
+			}
+			if(venue.categories[0].name){
+				self.category = venue.categories[0].name;
+				self.catIcon = venue.categories[0].icon.prefix+"_bg_32"+venue.categories[0].icon.suffix;
+			}
+			else{
+				self.category ='';
+				self.catIcon = '';
+			}
+			if(venue.rating){
+				self.rating = venue.rating;
+			}
+			else{
+				self.rating = "NA";
+			}
+			if(venue.url){
+				self.url = venue.url;
+			}
+			else{
+				self.url = '';
+			}
+
+		    //Build content for infowindow
+			windowContent = '<div class="venueBlock"><div class="venueIcon"><img src="' + self.catIcon + '" class="icon"></div><div class="venueDetails">' +
+              '<div class="venueName"><a href="' + self.url + '" target="_blank">' + self.name +'</a></div>' +
+              '<div class="venueScore neutral" style="background-color: #FFC800;">' + self.rating + '</div><div class="venueAddressData">' +
+               '<div class="venueAddress">' + self.sector + ', ' + self.city + '</div><div class="venueData"><span class="venueDataItem">' +
+               '<span class="categoryName">' + self.category + '</span></span></div></div></div></div>';			
+
+  			self.infoWindow.setContent(windowContent);
 		}).fail(function(error){
-    		infoWindow.setContent('Fail to connect to Foursquare: ' + error);
+    		self.infoWindow.setContent('Fail to connect to Foursquare: ' + error);
  		});
     
     }).fail(function(error){
-    		infoWindow.setContent('Fail to connect to Foursquare: ' + error);
- 	});;
+    		self.infoWindow.setContent('Fail to connect to Foursquare: ' + error);
+ 	});
     
-    //Build content for infowindow
- 
+        	
 	//making visible flag an observable so that we can hide/show markers as it changes
 	self.visible = ko.observable(true);
 
@@ -120,6 +158,10 @@ var School = function(value) {
           map: map,
           title: self.name
         });
+
+	google.maps.event.addListener(self.marker, 'mouseover', function() {
+		self.infoWindow.open(map, self.marker);
+	});
 
 	//this function would be called whenever visible (observable) changes
     self.showMarker = ko.computed( function(){
