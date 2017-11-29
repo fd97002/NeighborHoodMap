@@ -9,37 +9,45 @@
 // 5. Provide a filter option that uses an input field to filter both the list view and the map markers displayed by default on load. The list view 	*
 //    and the markers should update accordingly in real time. Providing a search function through a third-party API is not enough to meet specifications* 
 //    This filter can be a text input or a dropdown menu.																								*
+// 6. Add functionality using third-party APIs to provide information when a map marker or list view entry is clicked (ex: Yelp reviews, Wikipedia,		* 
+//	  Flickr images, etc). Note that StreetView and Places don't count as an additional 3rd party API because they are libraries included in the google * 
+//	  Maps API. If you need a refresher on making AJAX requests to third-party servers, check out our Intro to AJAX course. Please provide attribution 	*
+//	  to the data sources/APIs you use. For example if you are using Foursquare, indicate somewhere in your interface and in your README that you used 	*
+//	  Foursquare's API.
 // ******************************************************************************************************************************************************
 
 var map;
+var fs_apikey;
+var fs_secret;
 
 //List of Schools near Expressway Noida
 var schoolsModel = [
 	{
-		name: 'Lotus Valley International School, Sector 126',
+		name: 'Lotus Valley International School',
 		lat: 28.5382382,
 		long: 77.34513330000004
-	},
-	{
-		name: 'Step by Step School, Sector 132',
-		lat: 28.511652,
-		long: 77.378141
-	},
-	{
-		name: 'Pathways School, Sector 100',
-		lat: 28.54226,
-		long: 77.367722
-	},
-	{
-		name: 'The Shriram Millennium School',
-		lat: 28.499339,
-		long: 77.397373
-	},
-	{
-		name: 'Gyanshree School, Sector 127',
-		lat: 28.536222,
-		long: 77.349374
 	}
+	//,
+	//{
+	//	name: 'Step by Step School',
+	//	lat: 28.511652,
+	//	long: 77.378141
+	//},
+	//{
+	//	name: 'Pathways School',
+	//	lat: 28.54226,
+	//	long: 77.367722
+	//},
+	//{
+	//	name: 'The Shriram Millennium School',
+	//	lat: 28.499339,
+	//	long: 77.397373
+	//},
+	//{
+	//	name: 'Gyanshree School',
+	//	lat: 28.536222,
+	//	long: 77.349374
+	//}
 ];
 
 function InitMap() {
@@ -47,27 +55,74 @@ function InitMap() {
     	center: {lat: 28.5382382, lng: 77.34513330000004},
     	zoom: 16
 	});
+
+	//info window logic
+	var infowindow =  new google.maps.InfoWindow({
+		content: ''
+	});
+
+	google.maps.event.addListener(map, 'click', function(event) {
+		infowindow.setPosition(event.latLng);
+		infowindow.open(map);
+	});         	
+
 }
 
 var School = function(value) {
 	var self = this;
-	this.name = value.name;
-	this.lat = value.lat;
-	this.long = value.long;
+	self.name = value.name;
+	self.lat = value.lat;
+	self.long = value.long;
+	self.latLng = {lat: self.lat, lng: self.long};
 
+	//FourSquare APIs to fetch information on the marker location
+	self.photoUrl ='';
+	self.sector ='';
+	self.city='';
+	self.category='';
+
+	fs_apikey = "VFDBW4OD4LSAHNAE5ZT15QBLUKLGNPRPPLZNEVV5RXG30RCZ";
+	fs_secret = "L2TC2OZDPAW4UGIWNX2VUNYN2LRTKCYHNEAHBPKHTTOMF2PW";
+	fs_version = "20171128";
+
+  	var baseUrl = 'https://api.foursquare.com/v2/';
+    var fsSearchVenuesUrl=baseUrl+'venues/search?ll='+self.lat+','+self.long+'&client_id='+fs_apikey+'&client_secret='+fs_secret+'&v='+fs_version+'&query='+self.name;
+    
+    $.getJSON(fsSearchVenuesUrl).done(function (raspberry) {
+		var venue = raspberry.response.venues[0];
+		self.venueid = venue.id;
+
+    	var fsVenueDetailsUrl=baseUrl+'venues/'+self.venueid+'?&client_id='+fs_apikey+'&client_secret='+fs_secret+'&v='+fs_version;
+	
+		$.getJSON(fsVenueDetailsUrl).done(function (strawberry) {
+			var venue = strawberry.response.venue;
+			self.photoUrl = venue.bestPhoto.prefix+"width100"+venue.bestPhoto.suffix;
+			self.sector = venue.location.formattedAddress[0];
+			self.city = venue.location.formattedAddress[1];
+			self.category = venue.categories[0].name;				
+	
+		}).fail(function(error){
+    		infoWindow.setContent('Fail to connect to Foursquare: ' + error);
+ 		});
+    
+    }).fail(function(error){
+    		infoWindow.setContent('Fail to connect to Foursquare: ' + error);
+ 	});;
+    
+    //Build content for infowindow
+ 
 	//making visible flag an observable so that we can hide/show markers as it changes
-	this.visible = ko.observable(true);
+	self.visible = ko.observable(true);
 
 	//draw custom markers for each school
-	var myLatLng = {lat: this.lat, lng: this.long};
-	this.marker = new google.maps.Marker({
-          position: myLatLng,
+	self.marker = new google.maps.Marker({
+          position: self.latLng,
           map: map,
-          title: this.name
+          title: self.name
         });
 
 	//this function would be called whenever visible (observable) changes
-    this.showMarker = ko.computed( function(){
+    self.showMarker = ko.computed( function(){
     	if(!this.visible()){
     		this.marker.setMap(null);
     	}
@@ -75,8 +130,8 @@ var School = function(value) {
     		this.marker.setMap(map);
     	}
     	return true;	
-    }, this);
-    	
+    }, self);
+
 }
 
 function SchoolViewModel() {
@@ -131,3 +186,5 @@ function initSchoolsApp() {
 	ko.applyBindings(new SchoolViewModel());
 }
 
+//TODO
+//google.maps.event.addDomListener(window, 'load', initialize);
