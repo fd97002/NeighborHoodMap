@@ -29,7 +29,7 @@ html, body {
 }
 
 
-#filterschool {
+#filterneighborhood {
   position: absolute;
   left: 40px;
   width: 50%;
@@ -41,7 +41,7 @@ html, body {
   font-weight: bold;
 }
 
-#inputschool {
+#inputneighborhood {
   position: absolute;
   width: 240px;
   height: 40px;

@@ -22,8 +22,8 @@ var fs_secret;
 var currWindow = false;
 
 
-//List of Schools near Expressway Noida
-var schoolsModel = [
+//List of Places near Expressway Noida
+var neighborhoodModel = [
 	{
 		name: 'DLF Mall of India',
 		lat: 28.5675625,
@@ -59,7 +59,7 @@ function InitMap() {
 
 }
 
-var School = function(value) {
+var Neighborhood = function(value) {
 	var self = this;
 	self.name = value.name;
 	self.lat = value.lat;
@@ -153,7 +153,7 @@ var School = function(value) {
 	//making visible flag an observable so that we can hide/show markers as it changes
 	self.visible = ko.observable(true);
 
-	//draw custom markers for each school
+	//draw custom markers for each neighborhood
 	self.marker = new google.maps.Marker({
           position: self.latLng,
           map: map,
@@ -193,39 +193,39 @@ var School = function(value) {
 
 }
 
-function SchoolViewModel() {
+function NeighborhoodViewModel() {
 	var self = this;
 
 	//filter string
 	self.filterInput = ko.observable('');
 
 	//list of schools
-	self.schoolList = ko.observableArray([]);
-	self.filteredSchoolList = ko.observableArray([]);
+	self.neighborhoodList = ko.observableArray([]);
+	self.filteredNeighborhoodList = ko.observableArray([]);
 
 	//load map with default location
 	InitMap();
 	//google.maps.event.addDomListener(window, 'load', InitMap);
 
 
-	//Push all school names in an observable array
-	schoolsModel.forEach( function(s) {
-		var school = new School(s);
-		self.schoolList.push(school);
-		self.filteredSchoolList.push(school);
+	//Push all places names in an observable array
+	neighborhoodModel.forEach( function(s) {
+		var neighborhood = new Neighborhood(s);
+		self.neighborhoodList.push(neighborhood);
+		self.filteredNeighborhoodList.push(neighborhood);
 	});
 
 
 	//create an updated list based on what user typed
-	//filter checks if the string being typed matches any of the school names (in part starting index 0 to give an incremental serach effect)
+	//filter checks if the string being typed matches any of the places names (in part starting index 0 to give an incremental serach effect)
 	self.updateList = function () {
         var filterStr = self.filterInput().toLowerCase();
-        self.filteredSchoolList.removeAll();
+        self.filteredNeighborhoodList.removeAll();
 
-        self.schoolList().forEach(function(s){
+        self.neighborhoodList().forEach(function(s){
         	if(!filterStr || (s.name.toLowerCase().indexOf(filterStr)===0)){
         		s.visible(true);
-        		self.filteredSchoolList.push(s);
+        		self.filteredNeighborhoodList.push(s);
         	}
         	else{
         		s.visible(false);
@@ -235,7 +235,7 @@ function SchoolViewModel() {
     }
 
 	//trickery to invoke updateList function via dummy worker
-	//Now realise that filteredSchoolList can be an observable as well & that should prevent this trickery 
+	//Now realise that filteredNeighborhoodList can be an observable as well & that should prevent this trickery 
 	self.worker = ko.computed( function(){
 		self.updateList();
 	}, this); 
@@ -243,8 +243,8 @@ function SchoolViewModel() {
 
 }	
 
-function initSchoolsApp() {
-	ko.applyBindings(new SchoolViewModel());
+function initNeighborhoodApp() {
+	ko.applyBindings(new NeighborhoodViewModel());
 }
 
 
