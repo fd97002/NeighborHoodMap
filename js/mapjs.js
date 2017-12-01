@@ -19,6 +19,8 @@
 var map;
 var fs_apikey;
 var fs_secret;
+var currWindow = false;
+
 
 //List of Schools near Expressway Noida
 var schoolsModel = [
@@ -26,8 +28,7 @@ var schoolsModel = [
 		name: 'DLF Mall of India',
 		lat: 28.5675625,
 		long: 77.32123019999995
-	}
-	,
+	},
 	{
 		name: 'The Great India Place',
 		lat: 28.567806,
@@ -159,11 +160,27 @@ var School = function(value) {
           title: self.name
         });
 
-	google.maps.event.addListener(self.marker, 'mouseover', function() {
-		self.infoWindow.open(map, self.marker);
-	});
+	google.maps.event.addListener(self.marker, 'click', function() {			
+			if (currWindow){
+				currWindow.close();
+			} 
 
-	//this function would be called whenever visible (observable) changes
+			currWindow = self.infoWindow;
+			self.infoWindow.open(map, self.marker);
+        	self.marker.setAnimation(google.maps.Animation.BOUNCE);
+        	setTimeout(function() {
+            	self.marker.setAnimation(null);
+  		     }, 3000);
+ 
+  		});
+
+
+    // click handler for click on the list. animate the marker by generating click event
+    self.animate = function(place) {
+        google.maps.event.trigger(self.marker, 'click');
+    };
+
+    	//this function would be called whenever visible (observable) changes
     self.showMarker = ko.computed( function(){
     	if(!this.visible()){
     		this.marker.setMap(null);
@@ -188,6 +205,8 @@ function SchoolViewModel() {
 
 	//load map with default location
 	InitMap();
+	//google.maps.event.addDomListener(window, 'load', InitMap);
+
 
 	//Push all school names in an observable array
 	schoolsModel.forEach( function(s) {
@@ -228,5 +247,4 @@ function initSchoolsApp() {
 	ko.applyBindings(new SchoolViewModel());
 }
 
-//TODO
-//google.maps.event.addDomListener(window, 'load', initialize);
+
