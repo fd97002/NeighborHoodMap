@@ -5,7 +5,7 @@ The project pulls information about the shopping places using FourSquare API and
 
 ## How to view the project
 1. Pull in sources from this repo.
-2. Click n index.html at the root.
+2. Click onn index.html and launch it in browser.
 
 ## Inspiration
 1. Knockout JS documentation and samples. http://knockoutjs.com/documentation/introduction.html
