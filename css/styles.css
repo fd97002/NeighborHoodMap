@@ -8,46 +8,49 @@ html, body {
 	height: 100%;
 }
 
-.container {
-	background-color: rgba(0,0,22, .4);
-	border: 1px solid gray;
-	height: 100px;
-	width: 33.33%;
+.side {
+	background-color: rgba(0,0,22, 1);
+	height: 100%;
+	width: 256px;
 	position: absolute;
-	z-index: 5;
+	left: 0;
+	top: 0;
+	z-index: 10;
+}
+
+.divider {
+	margin: 10px 0 15px 0;
+	width: 100%;
+	border-bottom: 1px solid #CBC1C1;
+}
+
+.container {
+	width: 100%;
 } 
 
 .listcontainer {
-	position: absolute;
-	top: 25px;
-	right: 10px;
-	background-color: rgba(0,0,22, .6);
-	color:#f9f043;
-	border: 1px solid gray;
-	width: 30%;
-	z-index: 5;
+	width: 100%;
+	color: #CAD7FB;
 }
 
 
 #filterneighborhood {
-  position: absolute;
-  left: 40px;
-  width: 50%;
+  width: 100%;
   font-size: 18px;
   padding: 20px;
   padding-left: 5px;
-  z-index: 5;
-  color: #f9f043;
+  color: #CAD7FB;
   font-weight: bold;
 }
 
+#neighborhoodlist {
+	list-style: none;
+	padding-left: 15px;
+}
+
 #inputneighborhood {
-  position: absolute;
   width: 240px;
   height: 40px;
-  left: 45px;
-  top: 48px;
-  z-index: 5;
 }
 
 .venueBlock .venueDetails .venueData .venueDataItem:last-child .delim {
@@ -72,7 +75,7 @@ html, body {
 }
 
 .venueAddressData {
-    width: 170px;
+    /* width: 170px; */
 }
 .venueScore {
     float: left;
@@ -95,15 +98,16 @@ html, body {
 }
 
 
-.venue.details {
-    width: 208px;
+.venueDetails {
+    /* width: 208px; */
+	display: inline-block;
+	vertical-align: top;
+	padding-right: 10px;
 }
 
-.venuicon {
-    float: left;
-    height: 32px;
-    line-height: 0;
-    position: relative;
-    width: 42px;
+.venueImage {
+	display: inline-block;
+	vertical-align: top;
+	background-color: blue;
+	height: 80px;
 }
-

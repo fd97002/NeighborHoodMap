@@ -17,24 +17,27 @@
   <title>Neighborhood Map</title>
 </head>
 <body>
-<div class="container">
-    <div id="filterneighborhood">
-      Shopping Malls nearby:
-    </div>
+<div class="side">
+	<div class="container">
+	    <div id="filterneighborhood">
+	      Shopping Malls Nearby:
+	    </div>
 
-    <div id="inputneighborhood">
-      <input id="filterneighborhoodinput" placeholder="Input Name" type="text" data-bind="textInput: filterInput, valueUpdate: 'afterkeydown' "/>
-    </div>
+	    <div id="inputneighborhood">
+	      <input id="filterneighborhoodinput" placeholder="Input Name" type="text" data-bind="textInput: filterInput, valueUpdate: 'afterkeydown' "/>
+	    </div>
+	</div>
+
+	<div class="divider"></div>
+
+	<div class="listcontainer">
+	  <ul id="neighborhoodlist" data-bind="foreach: filteredNeighborhoodList">
+	    <li data-bind="text: name, click: animate"> </li>
+	  </ul>
+	</div>
 </div>
 
-<div class="listcontainer">
-  <h4>Malls Nearby</h4>
-  <ul id="neighborhoodlist" data-bind="foreach: filteredNeighborhoodList">
-    <li data-bind="text: name, click: animate"> </li>
-  </ul>
-</div>
-
-  <div id="map"></div>
+<div id="map"></div>
   <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDK-u7orw2dFAM-2VVKCPUtEUioCLWRHIE&v=3&callback=initNeighborhoodApp" async defer></script>
 </body>
 </html>

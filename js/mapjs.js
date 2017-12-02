@@ -134,11 +134,12 @@ var Neighborhood = function(value) {
 			}
 
 		    //Build content for infowindow
-			windowContent = '<div class="venueBlock"><div class="venueIcon"><img src="' + self.catIcon + '" class="icon"></div><div class="venueDetails">' +
+			// windowContent = '<div class="venueBlock"><div class="venueIcon"><img src="' + self.catIcon + '" class="icon"></div><div class="venueDetails">' +
+			windowContent = '<div class="venueBlock"><div class="venueDetails">' +
               '<div class="venueName"><a href="' + self.url + '" target="_blank">' + self.name +'</a></div>' +
               '<div class="venueScore neutral" style="background-color: #FFC800;">' + self.rating + '</div><div class="venueAddressData">' +
                '<div class="venueAddress">' + self.sector + ', ' + self.city + '</div><div class="venueData"><span class="venueDataItem">' +
-               '<span class="categoryName">' + self.category + '</span></span></div></div></div></div>';			
+               '<span class="categoryName">' + self.category + '</span></span></div></div></div><img src="' + self.photoUrl +'" class="venueImage"></div>';			
 
   			self.infoWindow.setContent(windowContent);
 		}).fail(function(error){
