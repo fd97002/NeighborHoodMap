@@ -11,3 +11,4 @@ The project pulls information about the shopping places using FourSquare API and
 1. Knockout JS documentation and samples. http://knockoutjs.com/documentation/introduction.html
 2. Google Map APIs & Samples https://developers.google.com/maps/documentation/javascript/examples/
 3. A lot of help (tips & tricks) from Stack Overflow https://stackoverflow.com/
+4. Handling Google Maps in Async & Fallback https://discussions.udacity.com/t/handling-google-maps-in-async-and-fallback/34282
