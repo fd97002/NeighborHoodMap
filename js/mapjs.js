@@ -248,4 +248,6 @@ function initNeighborhoodApp() {
 	ko.applyBindings(new NeighborhoodViewModel());
 }
 
-
+function googleError() {
+    alert('Oops... Unable to reach Google Maps.');
+}
